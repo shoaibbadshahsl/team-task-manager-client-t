@@ -6,25 +6,24 @@ export function useUsers() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchUsers = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await getUsers();
+      setUsers(res);
+    } catch (err: any) {
+      setError(err?.message || 'Failed to load users');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    let mounted = true;
-    const load = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await getUsers();
-        if (mounted) setUsers(res);
-      } catch (err: any) {
-        if (mounted) setError(err?.message || 'Failed to load users');
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    };
-    load();
-    return () => { mounted = false; };
+    fetchUsers();
   }, []);
 
-  return { users, loading, error } as { users: UserSummary[]; loading: boolean; error: string | null };
+  return { users, loading, error, refetch: fetchUsers };
 }
 
 export default useUsers;

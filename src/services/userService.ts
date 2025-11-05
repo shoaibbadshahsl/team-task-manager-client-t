@@ -20,4 +20,20 @@ export const getUsers = async (): Promise<UserSummary[]> => {
   }));
 };
 
-export default { getUsers };
+export const updateUser = async (id: string, userData: { name: string; email: string }): Promise<UserSummary> => {
+  const res = await api.put(`/auth/users/${id}`, userData);
+  const u = res.data;
+  return {
+    id: u._id || u.id || '',
+    name: u.name,
+    email: u.email,
+    createdAt: u.createdAt || null,
+    updatedAt: u.updatedAt || null,
+  };
+};
+
+export const deleteUser = async (id: string): Promise<void> => {
+  await api.delete(`/auth/users/${id}`);
+};
+
+export default { getUsers, updateUser, deleteUser };
