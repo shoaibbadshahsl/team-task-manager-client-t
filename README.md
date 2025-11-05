@@ -90,16 +90,18 @@ team-task-manager
 ## Getting Started
 1. Clone the repository:
    ```
-   git clone <repository-url>
+   git clone https://github.com/shoaibbadshahsl/team-task-manager-client-t.git
    ```
 2. Navigate to the project directory:
    ```
-   cd team-task-manager
+   cd team-task-manager-client
    ```
 3. Install dependencies:
+- May be you need to run the --force (due to old version of React 18+)
+   ```sh
+   npm install --force 
    ```
-   npm install --force (due to old version of React 18+)
-   ```
+
 4. Start the development server:
    ```
    npm start
