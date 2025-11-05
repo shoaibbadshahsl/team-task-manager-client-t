@@ -5,6 +5,8 @@ import TaskForm from './TaskForm';
 import { deleteTask } from '../../services/taskService';
 import ConfirmModal from '../ui/ConfirmModal';
 import Modal from '../ui/Modal';
+import { icons } from '../../utils/icons';
+import LoadingState from '../ui/LoadingState';
 
 const TaskList: React.FC = () => {
     const { tasks, loading, error, fetchTasks } = useTasks();
@@ -15,11 +17,24 @@ const TaskList: React.FC = () => {
     const [deleteError, setDeleteError] = useState<string | null>(null);
 
     if (loading) {
-        return <div className="bg-white rounded-lg p-6 shadow border">Loading tasks...</div>;
+        return (
+            <div className="bg-white rounded-lg shadow border">
+                <LoadingState 
+                    message="Loading tasks..." 
+                    className="p-6"
+                />
+            </div>
+        );
     }
 
     if (error) {
-        return <div className="bg-white rounded-lg p-6 shadow border text-red-600">Error loading tasks: {error}</div>;
+        return (
+            <div className="bg-white rounded-lg p-6 shadow border">
+                <div className="text-red-600 bg-red-50 p-4 rounded-md">
+                    Error loading tasks: {error}
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -129,7 +144,7 @@ const TaskList: React.FC = () => {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex items-center">
-                                            <div className="h-7 w-7 rounded-full bg-gray-100 flex items-center justify-center text-sm text-gray-700 mr-3">{assignedInitial}</div>
+                                            <icons.Avatar name={assignedDisplay} size="sm" className="h-1/2 mr-3" />
                                             <div className="text-sm text-gray-800">{assignedDisplay}</div>
                                         </div>
                                     </td>

@@ -1,5 +1,6 @@
 import React from 'react';
 import useUsers from '../../hooks/useUsers';
+import LoadingState from '../../components/ui/LoadingState';
 
 const Users: React.FC = () => {
     const { users, loading, error } = useUsers();
@@ -12,7 +13,11 @@ const Users: React.FC = () => {
             </div>
 
             <div className="bg-white shadow-sm rounded-lg p-6">
-                {loading && <p className="text-gray-600">Loading users...</p>}
+                {loading &&   <LoadingState
+                    message="Loading all the users..."
+                    className="bg-white rounded-lg shadow-sm"
+                />}
+
                 {error && <p className="text-red-600">Error loading users: {error}</p>}
 
                 {!loading && !error && (

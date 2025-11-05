@@ -1,6 +1,7 @@
 import React from 'react';
 import { Task } from '../../models/Task';
 import { useTaskStats } from '../../hooks/useTaskStats';
+import LoadingState from '../ui/LoadingState';
 
 interface StatsCardProps {
     title: string;
@@ -18,9 +19,24 @@ const StatsCard: React.FC<StatsCardProps> = ({ title, value, bgColor }) => (
 const DashboardStats: React.FC = () => {
     const { tasks, loading, error, stats } = useTaskStats() as any;
 
-    if (loading) return <div>Loading stats...</div>;
-    if (error) return <div>Error loading stats: {error.message}</div>;
-    if (!tasks) return <div>No data available</div>;
+    if (loading) return (
+        <LoadingState 
+            message="Loading dashboard statistics..." 
+            className="bg-white rounded-lg shadow-sm"
+        />
+    );
+    
+    if (error) return (
+        <div className="bg-red-50 text-red-600 p-4 rounded-lg">
+            Error loading stats: {error.message}
+        </div>
+    );
+    
+    if (!tasks) return (
+        <div className="bg-gray-50 text-gray-600 p-4 rounded-lg">
+            No data available
+        </div>
+    );
 
     // Prefer aggregated stats from API when available
     let totalTasks = 0;

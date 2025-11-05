@@ -1,7 +1,9 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 
 const Sidebar: React.FC = () => {
+    const { logout } = useAuth();
     const navLinkClass = ({isActive}: {isActive: boolean}) => 
         `block px-3 py-2 rounded-md ${
             isActive 
@@ -44,6 +46,16 @@ const Sidebar: React.FC = () => {
                         </NavLink>
                     </li>
                 </ul>
+            </div>
+
+            {/* Logout Section */}
+            <div className="mt-auto pt-6 border-t border-gray-200 mt-6">
+                <button
+                    onClick={logout}
+                    className="w-full text-left px-3 py-2 rounded-md text-red-600 hover:bg-red-50 font-medium"
+                >
+                    Logout
+                </button>
             </div>
         </div>
     );

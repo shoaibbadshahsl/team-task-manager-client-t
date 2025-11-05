@@ -34,12 +34,15 @@ const TaskForm: React.FC<TaskFormProps> = ({ existingTask, onTaskCreated, onCanc
   const [title, setTitle] = useState(existingTask?.title || '');
   const [description, setDescription] = useState(existingTask?.description || '');
   const [assignedTo, setAssignedTo] = useState<string>(() => {
-    const a: any = existingTask?.assignedTo;
-    if (!a) return user?.id || '';
-    if (typeof a === 'string') return a;
-    // if assignedTo is an object from API, prefer _id then id
-    if (typeof a === 'object') return a._id || a.id || '';
-    return user?.id || '';
+    // If we're editing an existing task, use its assignedTo value
+    if (existingTask?.assignedTo) {
+      const a: any = existingTask.assignedTo;
+      if (typeof a === 'string') return a;
+      // if assignedTo is an object from API, prefer _id then id
+      if (typeof a === 'object') return a._id || a.id || '';
+    }
+    // For new tasks, default to "Not assigned"
+    return '';
   });
   const [status, setStatus] = useState<'Pending' | 'In Progress' | 'Done'>(existingTask?.status || 'Pending');
 
