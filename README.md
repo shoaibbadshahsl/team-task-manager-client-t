@@ -7,6 +7,7 @@ The Team Task Management App is a web application designed to help teams manage 
 - User authentication (login and registration)
 - CRUD operations for tasks
 - Task assignment to users
+- Dashboard stats
 - Responsive and user-friendly interface
 - Clean architecture with separation of concerns
 
@@ -16,6 +17,12 @@ The Team Task Management App is a web application designed to help teams manage 
 - React Router
 - Context API for state management
 - Axios for API calls
+
+## Backend Technologies Used
+- Node js
+- Express js
+- Well documented API's in Postman
+- API integrated with localhost:5000/api/
 
 ## Project Structure
 ```
@@ -91,15 +98,13 @@ team-task-manager
    ```
 3. Install dependencies:
    ```
-   npm install
+   npm install --force (due to old version of React 18+)
    ```
 4. Start the development server:
    ```
    npm start
    ```
-
-## Contributing
-Contributions are welcome! Please open an issue or submit a pull request for any enhancements or bug fixes.
-
-## License
-This project is licensed under the MIT License.
+5. You would also need to start the backend project provided to run this app:
+   ```
+   clone that repo and npm install and then npm run dev
+   ```
