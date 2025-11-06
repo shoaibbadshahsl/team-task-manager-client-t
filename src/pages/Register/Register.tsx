@@ -1,32 +1,60 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useFormik } from 'formik';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { authService } from '../../services/authService';
 import AuthLayout from '../../components/layout/AuthLayout';
+import { registerValidationSchema } from '../../utils/validationSchemas';
+import useAuth from '../../hooks/useAuth';
+
+interface RegisterFormValues {
+    name: string;
+    email: string;
+    password: string;
+}
 
 const Register: React.FC = () => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
+     const { register } = useAuth();
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError('');
-        setIsLoading(true);
+    const from = (location.state as any)?.from?.pathname || '/';
 
-        try {
-                const user = await authService.register(name, email, password);
+    const formik = useFormik<RegisterFormValues>({
+        initialValues: {
+            name: '',
+            email: '',
+            password: ''
+        },
+        validationSchema: registerValidationSchema,
+        onSubmit: async (values, { setSubmitting, setStatus }) => {
+            try {
+                //  await authService.register(
+                //     values.name,
+                //     values.email,
+                //     values.password
+                // );
+
+                await register(
+                    values.name,
+                    values.email,
+                    values.password
+                );
+
+                 navigate(from, { replace: true });
                 // If registration auto-logged in, redirect to dashboard/home; otherwise go to login
-                const token = localStorage.getItem('token');
-                if (token) navigate('/'); else navigate('/login');
-        } catch (err) {
-            setError('Registration failed. Please try again.');
-        } finally {
-            setIsLoading(false);
+                // const token = localStorage.getItem('token');
+                // if (token) {
+                //     navigate(from, { replace: true });
+                // } else {
+                //     navigate('/login');
+                // }
+            } catch (err: any) {
+                setStatus(err?.message || 'Registration failed. Please try again.');
+            } finally {
+                setSubmitting(false);
+            }
         }
-    };
+    });
 
     return (
         <AuthLayout
@@ -34,12 +62,12 @@ const Register: React.FC = () => {
             linkText="Already have an account? Sign in"
             linkPath="/login"
         >
-            {error && (
+            {formik.status && (
                 <div className="rounded-md bg-red-50 p-4">
-                    <div className="text-sm text-red-700">{error}</div>
+                    <div className="text-sm text-red-700">{formik.status}</div>
                 </div>
             )}
-            <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+            <form className="mt-8 space-y-6" onSubmit={formik.handleSubmit}>
                 <div className="rounded-md shadow-sm -space-y-px">
                     <div>
                         <label htmlFor="name" className="sr-only">
@@ -48,12 +76,17 @@ const Register: React.FC = () => {
                         <input
                             id="name"
                             type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            required
-                            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                            {...formik.getFieldProps('name')}
+                            className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
+                                formik.touched.name && formik.errors.name
+                                    ? 'border-red-300'
+                                    : 'border-gray-300'
+                            } placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
                             placeholder="Full Name"
                         />
+                        {formik.touched.name && formik.errors.name && (
+                            <div className="text-sm text-red-600 mt-1">{formik.errors.name}</div>
+                        )}
                     </div>
                     <div>
                         <label htmlFor="email" className="sr-only">
@@ -62,12 +95,17 @@ const Register: React.FC = () => {
                         <input
                             id="email"
                             type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                            {...formik.getFieldProps('email')}
+                            className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
+                                formik.touched.email && formik.errors.email
+                                    ? 'border-red-300'
+                                    : 'border-gray-300'
+                            } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
                             placeholder="Email address"
                         />
+                        {formik.touched.email && formik.errors.email && (
+                            <div className="text-sm text-red-600 mt-1">{formik.errors.email}</div>
+                        )}
                     </div>
                     <div>
                         <label htmlFor="password" className="sr-only">
@@ -76,22 +114,27 @@ const Register: React.FC = () => {
                         <input
                             id="password"
                             type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                            {...formik.getFieldProps('password')}
+                            className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
+                                formik.touched.password && formik.errors.password
+                                    ? 'border-red-300'
+                                    : 'border-gray-300'
+                            } placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
                             placeholder="Password"
                         />
+                        {formik.touched.password && formik.errors.password && (
+                            <div className="text-sm text-red-600 mt-1">{formik.errors.password}</div>
+                        )}
                     </div>
                 </div>
 
                 <div>
                     <button
                         type="submit"
-                        disabled={isLoading}
+                        disabled={formik.isSubmitting}
                         className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
                     >
-                        {isLoading ? 'Creating account...' : 'Create account'}
+                        {formik.isSubmitting ? 'Creating account...' : 'Create account'}
                     </button>
                 </div>
             </form>

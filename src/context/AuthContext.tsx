@@ -32,9 +32,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const register = async (name: string, email: string, password: string) => {
+    // registerApi now returns the created User (when backend returns user or token)
     const u = await registerApi(name, email, password);
-    setUser(u);
-    try { localStorage.setItem('user', JSON.stringify(u)); } catch {}
+    if (u) {
+      setUser(u);
+      try { localStorage.setItem('user', JSON.stringify(u)); } catch {}
+    }
   };
 
   return <AuthContext.Provider value={{ user, login, logout, register }}>{children}</AuthContext.Provider>;
