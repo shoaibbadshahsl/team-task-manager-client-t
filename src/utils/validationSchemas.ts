@@ -41,8 +41,8 @@ export const loginValidationSchema = Yup.object({
     .required('Password is required')
     .min(6, 'Password must be at least 6 characters')
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/,
-      'Password must contain at least one uppercase letter, one lowercase letter, and one number'
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{6,}$/,
+      'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&#)'
     )
 });
 
@@ -62,7 +62,7 @@ export const registerValidationSchema = Yup.object({
     .required('Password is required')
     .min(6, 'Password must be at least 6 characters')
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/,
-      'Password must contain at least one uppercase letter, one lowercase letter, and one number'
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{6,}$/,
+      'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&#)'
     )
 });
